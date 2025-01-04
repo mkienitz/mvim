@@ -11,9 +11,6 @@ let
     # lua
     ''
       function(client, bufnr)
-        if client.server_capabilities.inlayHintProvider then
-          vim.lsp.inlay_hint(bufnr, true)
-        end
         local wk = require("which-key")
         wk.add({
           { "K", vim.lsp.buf.hover, desc = "Hover documentation", buffer = bufnr },
@@ -62,8 +59,7 @@ in
       dependencies = with vpkgs; [
         dressing-nvim
         which-key-nvim
-        cmp-nvim-lsp
-        nvim-cmp
+        blink-cmp
         lean-nvim
         telescope-nvim
         crates-nvim
@@ -113,7 +109,7 @@ in
         # lua
         ''
           function(_, opts)
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
             local lspconfig = require("lspconfig")
             for server_name, server_opts in pairs(opts.servers) do
               server_opts.capabilities = capabilities

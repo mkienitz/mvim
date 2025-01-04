@@ -1,6 +1,7 @@
 {
   imports = [
-    ./cmp.nix
+    # ./cmp.nix
+    ./blink.nix
     ./lspconfig.nix
   ];
 }
