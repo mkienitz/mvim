@@ -55,7 +55,7 @@
               moovimLib = import ./lib nixvim.lib.nixvim;
             };
           };
-          nvim = nixvim'.makeNixvimWithModule nixvimModule;
+          mvim = nixvim'.makeNixvimWithModule nixvimModule;
         in
         {
           devshells.default = {
@@ -75,8 +75,7 @@
           };
 
           checks.default = nixvim.lib.nixvim.check.mkTestDerivationFromNixvimModule nixvimModule;
-
-          packages.default = nvim;
+          packages.default = mvim;
         };
     };
 }
