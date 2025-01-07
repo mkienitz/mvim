@@ -1,10 +1,11 @@
+{ config, ... }:
 {
   files =
     let
       mkIndentSettings = lang: width: expandTab: {
         name = "ftplugin/${lang}.lua";
         value = {
-          opts = {
+          localOpts = {
             expandtab = expandTab;
             shiftwidth = width;
             tabstop = width;
@@ -34,5 +35,8 @@
           typst = "typst",
         }
       })
+      -- NOTE: nixvim standalone does not add extraFiles to runtimepath
+      -- https://nix-community.github.io/nixvim/NeovimOptions/index.html?highlight=files#impurertp
+      vim.opt.runtimepath:prepend("${config.build.extraFiles}")
     '';
 }
