@@ -102,6 +102,10 @@ in
             rust_analyzer.settings.rust-analyzer = {
               checkOnSave.command = "clippy";
               files.excludeDirs = [ ".direnv" ];
+              cargo.features = [ "ssr " ];
+              procMacro.ignored.leptos_macro = [
+                "server"
+              ];
             };
           };
       };
