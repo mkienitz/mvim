@@ -49,8 +49,7 @@
           nixvim' = nixvim.legacyPackages.${system};
           nixvimModule = {
             inherit pkgs;
-            module = import ./config; # import the module directly
-            # You can use `extraSpecialArgs` to pass additional arguments to your module files
+            module = import ./config;
             extraSpecialArgs = {
               moovimLib = import ./lib nixvim.lib.nixvim;
             };
@@ -75,6 +74,7 @@
           };
 
           checks.default = nixvim.lib.nixvim.check.mkTestDerivationFromNixvimModule nixvimModule;
+
           packages.default = mvim;
         };
     };
