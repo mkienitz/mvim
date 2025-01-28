@@ -9,6 +9,7 @@
     ./lualine.nix
     ./neo-tree.nix
     ./neogit.nix
+    ./nvim-ts-autotag.nix
     ./nvim-window-picker.nix
     ./oil-nvim.nix
     ./telescope.nix
