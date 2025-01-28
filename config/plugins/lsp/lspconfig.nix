@@ -113,10 +113,9 @@ in
         # lua
         ''
           function(_, opts)
-            local capabilities = require("blink.cmp").get_lsp_capabilities()
             local lspconfig = require("lspconfig")
             for server_name, server_opts in pairs(opts.servers) do
-              server_opts.capabilities = capabilities
+              server_opts.capabilities = require("blink.cmp").get_lsp_capabilities(server_opts.capabilities)
               server_opts.on_attach = ${on_attach}
               lspconfig[server_name].setup(server_opts)
             end
