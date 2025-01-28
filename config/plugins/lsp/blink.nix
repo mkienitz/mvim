@@ -10,7 +10,10 @@
       ];
       opts = {
         completion = {
-          list.selection = "manual";
+          list.selection = {
+            auto_insert = false;
+            preselect = false;
+          };
           documentation.auto_show = true;
         };
         keymap = {
