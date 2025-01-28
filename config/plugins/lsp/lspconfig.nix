@@ -74,7 +74,6 @@ in
                 value = emptyTable;
               })
               [
-                "denols"
                 "gleam"
                 "hls"
                 "leanls"
