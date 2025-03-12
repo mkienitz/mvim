@@ -75,6 +75,7 @@ in
               })
               [
                 "gleam"
+                "gopls"
                 "hls"
                 "leanls"
                 "pyright"
