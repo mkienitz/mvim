@@ -18,6 +18,15 @@
   ];
   plugins.lazy = {
     enable = true;
+    package = pkgs.vimPlugins.lazy-nvim.overrideAttrs (_old: {
+      version = "2025-01-20";
+      src = pkgs.fetchFromGitHub {
+        owner = "folke";
+        repo = "lazy.nvim";
+        rev = "7e6c863bc7563efbdd757a310d17ebc95166cef3";
+        sha256 = "sha256-48i6Z6cwccjd5rRRuIyuuFS68J0lAIAEEiSBJ4Vq5vY=";
+      };
+    });
     # Plugins with no special configuration go here
     plugins = with pkgs.vimPlugins; [
       {
