@@ -37,7 +37,6 @@ in
       pkg = vpkgs.crates-nvim;
       dependencies = with vpkgs; [
         plenary-nvim
-        nvim-cmp
       ];
       opts = {
         lsp = {
@@ -47,7 +46,6 @@ in
           hover = true;
           on_attach.__raw = on_attach;
         };
-        completion.cmp.enabled = true;
       };
     }
     {
@@ -81,6 +79,7 @@ in
                 "pyright"
                 "svelte"
                 "tailwindcss"
+                "templ"
                 "tinymist"
                 "ts_ls"
               ]
