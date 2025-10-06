@@ -4,7 +4,7 @@
   ...
 }:
 let
-  inherit (lib.nixvim) emptyTable toRawKeys;
+  inherit (lib.nixvim) toRawKeys;
   inherit (builtins) map listToAttrs;
   vpkgs = pkgs.vimPlugins;
   on_attach =
@@ -50,10 +50,6 @@ in
     }
     {
       pkg = vpkgs.nvim-lspconfig;
-      event = [
-        "BufReadPre"
-        "BufNewFile"
-      ];
       dependencies = with vpkgs; [
         dressing-nvim
         which-key-nvim
@@ -62,68 +58,64 @@ in
         telescope-nvim
         crates-nvim
       ];
-      opts = {
-        servers =
-          # Generic servers
-          listToAttrs (
-            map
-              (server_name: {
-                name = server_name;
-                value = emptyTable;
-              })
-              [
-                "gleam"
-                "gopls"
-                "hls"
-                "leanls"
-                "pyright"
-                "svelte"
-                "tailwindcss"
-                "templ"
-                "tinymist"
-                "ts_ls"
-              ]
-          )
-          // {
-
-            lua_ls.settings.Lua = {
-              diagnostics.globals = [ "vim" ];
-              workspace.library = toRawKeys {
-                "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
-                "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
-              };
-            };
-
-            nil_ls.settings.nil.formatting.command = [
-              "${(lib.getExe pkgs.nixfmt-rfc-style)}"
-              "--quiet"
-            ];
-
-            rust_analyzer.settings.rust-analyzer = {
-              checkOnSave.command = "clippy";
-              files.excludeDirs = [ ".direnv" ];
-              cargo.features = [ "ssr " ];
-              procMacro.ignored.leptos_macro = [
-                "server"
-              ];
-            };
-          };
-      };
-      config =
-        # lua
-        ''
-          function(_, opts)
-            local lspconfig = require("lspconfig")
-            for server_name, server_opts in pairs(opts.servers) do
-              server_opts.capabilities = require("blink.cmp").get_lsp_capabilities(server_opts.capabilities)
-              server_opts.on_attach = ${on_attach}
-              lspconfig[server_name].setup(server_opts)
-            end
-            require("lean").setup({
-              lsp = { on_attach = ${on_attach}}
-            })
-          end
-        '';
     }
   ];
+  lsp = {
+    servers =
+      # NOTE: list of generic servers we want to enable and just use
+      # the default configs provided by nvim-lspconfig
+      listToAttrs (
+        map
+          (server_name: {
+            name = server_name;
+            value = {
+              enable = true;
+            };
+          })
+          [
+            "gleam"
+            "gopls"
+            "hls"
+            "leanls"
+            "pyright"
+            "svelte"
+            "tailwindcss"
+            "templ"
+            "tinymist"
+            "ts_ls"
+          ]
+      )
+      // {
+        "*".settings.on_attach.__raw = on_attach;
+        lua_ls = {
+          enable = true;
+          settings.Lua = {
+            diagnostics.globals = [ "vim" ];
+            # NOTE: use toRawKeys so the lua expressions end up in the table
+            workspace.library = toRawKeys {
+              "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
+              "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
+            };
+          };
+        };
+        nil_ls = {
+          enable = true;
+          settings.nil.formatting.command = [
+            "${(lib.getExe pkgs.nixfmt-rfc-style)}"
+            "--quiet"
+          ];
+        };
+        rust_analyzer = {
+          enable = true;
+          settings.rust-analyzer = {
+            checkOnSave.command = "clippy";
+            files.excludeDirs = [ ".direnv" ];
+            cargo.features = [ "ssr " ];
+            procMacro.ignored.leptos_macro = [
+              "server"
+            ];
+          };
+        };
+      };
+  };
 }
