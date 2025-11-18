@@ -86,34 +86,45 @@ in
           ]
       )
       // {
+        # BUG: This appears overriden by the default on_attach functions of the following LSPs
+        # Therefore we add it manually for each entry
         "*".settings.on_attach.__raw = on_attach;
         lua_ls = {
           enable = true;
-          settings.Lua = {
-            diagnostics.globals = [ "vim" ];
-            # NOTE: use toRawKeys so the lua expressions end up in the table
-            workspace.library = toRawKeys {
-              "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
-              "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
+          settings = {
+            on_attach.__raw = on_attach;
+            Lua = {
+              diagnostics.globals = [ "vim" ];
+              # NOTE: use toRawKeys so the lua expressions end up in the table
+              workspace.library = toRawKeys {
+                "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
+                "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
+              };
             };
           };
         };
         nil_ls = {
           enable = true;
-          settings.nil.formatting.command = [
-            "${(lib.getExe pkgs.nixfmt-rfc-style)}"
-            "--quiet"
-          ];
+          settings = {
+            on_attach.__raw = on_attach;
+            nil.formatting.command = [
+              "${(lib.getExe pkgs.nixfmt-rfc-style)}"
+              "--quiet"
+            ];
+          };
         };
         rust_analyzer = {
           enable = true;
-          settings.rust-analyzer = {
-            checkOnSave.command = "clippy";
-            files.excludeDirs = [ ".direnv" ];
-            cargo.features = [ "ssr " ];
-            procMacro.ignored.leptos_macro = [
-              "server"
-            ];
+          settings = {
+            on_attach.__raw = on_attach;
+            rust-analyzer = {
+              checkOnSave.command = "clippy";
+              files.excludeDirs = [ ".direnv" ];
+              cargo.features = [ "ssr " ];
+              procMacro.ignored.leptos_macro = [
+                "server"
+              ];
+            };
           };
         };
       };
