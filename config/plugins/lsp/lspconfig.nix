@@ -76,6 +76,7 @@ in
             "gleam"
             "gopls"
             "hls"
+            "omnisharp"
             "leanls"
             "pyright"
             "svelte"
