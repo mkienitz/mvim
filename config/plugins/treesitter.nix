@@ -7,8 +7,16 @@
   ];
   plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
-      pkg = nvim-treesitter-textobjects;
+      pkg = nvim-treesitter-textobjects.overrideAttrs (_old: {
+        src = pkgs.fetchFromGitHub {
+          owner = "nvim-treesitter";
+          repo = "nvim-treesitter-textobjects";
+          rev = "d0d12338230c1ce4ce27373f5b8d50a8c691794b";
+          sha256 = "sha256-Ma0brcx75JOUuCM7prc69cLpCitCfS8E4X3E96rZ0j8=";
+        };
+      });
       dependencies = [ nvim-treesitter ];
+      enabled = false;
       event = [
         "BufReadPost"
         "BufNewFile"
@@ -163,21 +171,46 @@
           };
         };
       };
-      config =
-        # NOTE: use pkgs.linkFarm instead?
+      config = # lua
+        ''
+          function(_, opts)
+              require("nvim-treesitter-textobjects").setup(opts)
+          end
+        '';
+    }
+    {
+      pkg = nvim-treesitter;
+      opts =
         let
           parsersDir = "${pkgs.symlinkJoin {
             name = "treesitter-parsers";
             paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
           }}";
         in
-        # lua
+        {
+          install_dir = parsersDir;
+        };
+      config = # lua
         ''
           function(_, opts)
-            vim.opt.runtimepath:prepend("${parsersDir}")
-            require("nvim-treesitter.configs").setup(opts)
+              require("nvim-treesitter").setup(opts)
           end
         '';
     }
+  ];
+  autoCmd = [
+    {
+      event = "FileType";
+      pattern = builtins.attrNames pkgs.vimPlugins.nvim-treesitter.parsers;
+      callback = {
+        __raw = # lua
+          ''
+            function()
+              vim.treesitter.start()
+            end
+          '';
+      };
+    }
+
   ];
 }
