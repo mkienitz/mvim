@@ -82,17 +82,16 @@ in
             "svelte"
             "tailwindcss"
             "templ"
-            "tinymist"
             "ts_ls"
           ]
       )
       // {
         # BUG: This appears overriden by the default on_attach functions of the following LSPs
         # Therefore we add it manually for each entry
-        "*".settings.on_attach.__raw = on_attach;
+        "*".config.on_attach.__raw = on_attach;
         lua_ls = {
           enable = true;
-          settings = {
+          config = {
             on_attach.__raw = on_attach;
             Lua = {
               diagnostics.globals = [ "vim" ];
@@ -104,19 +103,23 @@ in
             };
           };
         };
+        tinymist = {
+          enable = true;
+          config.on_attach.__raw = on_attach;
+        };
         nil_ls = {
           enable = true;
-          settings = {
+          config = {
             on_attach.__raw = on_attach;
             nil.formatting.command = [
-              "${(lib.getExe pkgs.nixfmt-rfc-style)}"
+              "${(lib.getExe pkgs.nixfmt)}"
               "--quiet"
             ];
           };
         };
         rust_analyzer = {
           enable = true;
-          settings = {
+          config = {
             on_attach.__raw = on_attach;
             rust-analyzer = {
               checkOnSave.command = "clippy";
