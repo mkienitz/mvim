@@ -70,6 +70,7 @@ in
             name = server_name;
             value = {
               enable = true;
+              package = null;
             };
           })
           [
@@ -91,6 +92,7 @@ in
         "*".config.on_attach.__raw = on_attach;
         lua_ls = {
           enable = true;
+          package = null;
           config = {
             on_attach.__raw = on_attach;
             Lua = {
@@ -105,10 +107,17 @@ in
         };
         tinymist = {
           enable = true;
+          package = null;
+          config.on_attach.__raw = on_attach;
+        };
+        ty = {
+          enable = true;
+          package = null;
           config.on_attach.__raw = on_attach;
         };
         nil_ls = {
           enable = true;
+          package = null;
           config = {
             on_attach.__raw = on_attach;
             nil.formatting.command = [
@@ -119,6 +128,7 @@ in
         };
         rust_analyzer = {
           enable = true;
+          package = null;
           config = {
             on_attach.__raw = on_attach;
             rust-analyzer = {
