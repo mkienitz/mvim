@@ -61,86 +61,74 @@ in
     }
   ];
   lsp = {
-    servers =
-      # NOTE: list of generic servers we want to enable and just use
-      # the default configs provided by nvim-lspconfig
-      listToAttrs (
-        map
-          (server_name: {
-            name = server_name;
-            value = {
-              enable = true;
-              package = null;
-            };
-          })
-          [
-            "gleam"
-            "gopls"
-            "hls"
-            "omnisharp"
-            "leanls"
-            "pyright"
-            "svelte"
-            "tailwindcss"
-            "templ"
-            "ts_ls"
-          ]
-      )
-      // {
-        # BUG: This appears overriden by the default on_attach functions of the following LSPs
-        # Therefore we add it manually for each entry
-        "*".config.on_attach.__raw = on_attach;
-        lua_ls = {
-          enable = true;
-          package = null;
-          config = {
-            on_attach.__raw = on_attach;
-            Lua = {
-              diagnostics.globals = [ "vim" ];
-              # NOTE: use toRawKeys so the lua expressions end up in the table
-              workspace.library = toRawKeys {
-                "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
-                "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
-              };
-            };
-          };
-        };
-        tinymist = {
-          enable = true;
-          package = null;
-          config.on_attach.__raw = on_attach;
-        };
-        ty = {
-          enable = true;
-          package = null;
-          config.on_attach.__raw = on_attach;
-        };
-        nil_ls = {
-          enable = true;
-          package = null;
-          config = {
-            on_attach.__raw = on_attach;
-            nil.formatting.command = [
-              "${(lib.getExe pkgs.nixfmt)}"
-              "--quiet"
-            ];
-          };
-        };
-        rust_analyzer = {
-          enable = true;
-          package = null;
-          config = {
-            on_attach.__raw = on_attach;
-            rust-analyzer = {
-              checkOnSave.command = "clippy";
-              files.excludeDirs = [ ".direnv" ];
-              cargo.features = [ "ssr " ];
-              procMacro.ignored.leptos_macro = [
-                "server"
-              ];
+    servers = {
+      # Use custom on_attach function for all LSPs
+      # Don't include actual LSP binaries
+      "*".config.on_attach.__raw = on_attach;
+      lua_ls = {
+        enable = true;
+        package = null;
+        config = {
+          Lua = {
+            diagnostics.globals = [ "vim" ];
+            # NOTE: use toRawKeys so the lua expressions end up in the table
+            workspace.library = toRawKeys {
+              "vim.fn.expand(\"$VIMRUNTIME/lua\")" = true;
+              "vim.fn.stdpath(\"config\") .. \"/lua\"" = true;
             };
           };
         };
       };
+      nil_ls = {
+        enable = true;
+        package = null;
+        config = {
+          nil.formatting.command = [
+            "${(lib.getExe pkgs.nixfmt)}"
+            "--quiet"
+          ];
+        };
+      };
+      rust_analyzer = {
+        enable = true;
+        package = null;
+        config = {
+          rust-analyzer = {
+            checkOnSave.command = "clippy";
+            files.excludeDirs = [ ".direnv" ];
+            cargo.features = [ "ssr " ];
+            procMacro.ignored.leptos_macro = [
+              "server"
+            ];
+          };
+        };
+      };
+    }
+    # NOTE: list of generic servers we want to enable and just use
+    # the default configs provided by nvim-lspconfig
+    // listToAttrs (
+      map
+        (server_name: {
+          name = server_name;
+          value = {
+            enable = true;
+            package = null;
+          };
+        })
+        [
+          "clangd"
+          "gleam"
+          "gopls"
+          "hls"
+          "leanls"
+          "omnisharp"
+          "svelte"
+          "tailwindcss"
+          "templ"
+          "tinymist"
+          "ts_ls"
+          "ty"
+        ]
+    );
   };
 }
