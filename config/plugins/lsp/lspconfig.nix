@@ -62,13 +62,11 @@ in
   ];
   lsp = {
     servers = {
-      # Use custom on_attach function for all LSPs
-      # Don't include actual LSP binaries
-      "*".config.on_attach.__raw = on_attach;
       lua_ls = {
         enable = true;
         package = null;
         config = {
+          on_attach.__raw = on_attach;
           Lua = {
             diagnostics.globals = [ "vim" ];
             # NOTE: use toRawKeys so the lua expressions end up in the table
@@ -83,6 +81,7 @@ in
         enable = true;
         package = null;
         config = {
+          on_attach.__raw = on_attach;
           nil.formatting.command = [
             "${(lib.getExe pkgs.nixfmt)}"
             "--quiet"
@@ -93,6 +92,7 @@ in
         enable = true;
         package = null;
         config = {
+          on_attach.__raw = on_attach;
           rust-analyzer = {
             checkOnSave.command = "clippy";
             files.excludeDirs = [ ".direnv" ];
@@ -113,6 +113,7 @@ in
           value = {
             enable = true;
             package = null;
+            config.on_attach.__raw = on_attach;
           };
         })
         [
